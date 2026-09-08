@@ -1,0 +1,7 @@
+{
+  "pack": {
+    "description": "${name}",
+    "forge:server_data_pack_format": ${data_pack_format},
+    "pack_format": ${pack_format}
+  }
+}

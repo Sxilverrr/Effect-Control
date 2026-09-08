@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "${lang_range}"
+license = "MIT"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+authors = "Sxilverr"
+description = "Highly customizable potion effect applier & remover."
+logoFile = "icon.png"
+displayTest = "IGNORE_ALL_VERSION"
+
+[[dependencies.${id}]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "${loader_range}"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${id}]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "${minecraft}"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${id}]]
+    modId = "curios"
+    type = "optional"
+    versionRange = "*"
+    ordering = "AFTER"
+    side = "BOTH"
