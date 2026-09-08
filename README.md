@@ -1,4 +1,5 @@
-# Effect Control
+<img width="768" height="546" alt="effect_control_banner" src="https://github.com/user-attachments/assets/9e2c5bf1-eb83-49e9-9d13-a586a2574556" />
+
 
 Highly customizable potion effect applier & remover.
 
