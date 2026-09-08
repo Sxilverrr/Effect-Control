@@ -135,8 +135,10 @@ Stat types: `mined`, `killed`, `killed_by`, `used`, `crafted`, `broken`, `picked
 Everything from `x` downwards works on every trigger:
 
 ```toml
-"effect=minecraft:poison, duration=10, trigger=pickup, item=minecraft:diamond, y=..0, time=night"
-"effect=minecraft:strength, duration=60, trigger=join, stat=killed:minecraft:zombie, count=100.."
+effects = [
+    "effect=minecraft:poison, duration=10, trigger=pickup, item=minecraft:diamond, y=..0, time=night",
+    "effect=minecraft:strength, duration=60, trigger=join, stat=killed:minecraft:zombie, count=100.."
+]
 ```
 
 ## Conditions
@@ -145,8 +147,10 @@ Everything from `x` downwards works on every trigger:
 pass. `has` and `without` are aliases.
 
 ```toml
-"effect=minecraft:regeneration, duration=15, trigger=join, requires=minecraft:poison"
-"effect=minecraft:strength, duration=30, trigger=respawn, missing=minecraft:weakness"
+effects = [
+    "effect=minecraft:regeneration, duration=15, trigger=join, requires=minecraft:poison",
+    "effect=minecraft:strength, duration=30, trigger=respawn, missing=minecraft:weakness"
+]
 ```
 
 Conditions read the player's state from **before** the rule set runs, so rules in one event cannot
@@ -181,7 +185,9 @@ The `wearing` filter checks armour slots and, when
 [Curios](https://www.curseforge.com/minecraft/mc-mods/curios) is installed, curio slots as well:
 
 ```toml
-"effect=minecraft:speed, duration=30, trigger=consume, item=minecraft:bread, wearing=curios:ring"
+effects = [
+    "effect=minecraft:speed, duration=30, trigger=consume, item=minecraft:bread, wearing=curios:ring"
+]
 ```
 
 ## Limits
