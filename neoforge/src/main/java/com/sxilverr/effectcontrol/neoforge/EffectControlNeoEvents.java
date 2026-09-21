@@ -4,6 +4,7 @@ import com.sxilverr.effectcontrol.EffectControl;
 import com.sxilverr.effectcontrol.EffectControlCommand;
 import com.sxilverr.effectcontrol.DelayedEffects;
 import com.sxilverr.effectcontrol.EffectApplier;
+import com.sxilverr.effectcontrol.EffectChanges;
 import com.sxilverr.effectcontrol.EventKind;
 import com.sxilverr.effectcontrol.StateScanner;
 import com.sxilverr.effectcontrol.TriggerContext;
@@ -18,6 +19,7 @@ import net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 import net.neoforged.neoforge.event.entity.player.ArrowLooseEvent;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
@@ -210,6 +212,27 @@ public final class EffectControlNeoEvents {
     }
 
     @SubscribeEvent
+    public static void onEffectAdded(MobEffectEvent.Added event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            EffectChanges.note(player, event.getEffectInstance(), event.getOldEffectInstance() != null);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEffectRemoved(MobEffectEvent.Remove event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            EffectChanges.note(player, event.getEffectInstance(), true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEffectExpired(MobEffectEvent.Expired event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            EffectChanges.note(player, event.getEffectInstance(), true);
+        }
+    }
+
+    @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         EffectControlCommand.register(event.getDispatcher());
     }
@@ -218,12 +241,14 @@ public final class EffectControlNeoEvents {
     public static void onServerTick(ServerTickEvent.Post event) {
         DelayedEffects.tick(event.getServer());
         StateScanner.tick(event.getServer());
+        EffectChanges.tick(event.getServer());
     }
 
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
         DelayedEffects.clear();
         StateScanner.clear();
+        EffectChanges.clear();
     }
 
     private static ResourceLocation dimension(ServerPlayer player) {

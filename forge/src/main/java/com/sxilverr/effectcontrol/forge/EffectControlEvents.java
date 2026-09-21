@@ -4,6 +4,7 @@ import com.sxilverr.effectcontrol.EffectControl;
 import com.sxilverr.effectcontrol.EffectControlCommand;
 import com.sxilverr.effectcontrol.DelayedEffects;
 import com.sxilverr.effectcontrol.EffectApplier;
+import com.sxilverr.effectcontrol.EffectChanges;
 import com.sxilverr.effectcontrol.EventKind;
 import com.sxilverr.effectcontrol.StateScanner;
 import com.sxilverr.effectcontrol.TriggerContext;
@@ -18,6 +19,7 @@ import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ItemFishedEvent;
@@ -209,6 +211,27 @@ public final class EffectControlEvents {
     }
 
     @SubscribeEvent
+    public static void onEffectAdded(MobEffectEvent.Added event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            EffectChanges.note(player, event.getEffectInstance(), event.getOldEffectInstance() != null);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEffectRemoved(MobEffectEvent.Remove event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            EffectChanges.note(player, event.getEffectInstance(), true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEffectExpired(MobEffectEvent.Expired event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            EffectChanges.note(player, event.getEffectInstance(), true);
+        }
+    }
+
+    @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         EffectControlCommand.register(event.getDispatcher());
     }
@@ -218,6 +241,7 @@ public final class EffectControlEvents {
         if (event.phase == TickEvent.Phase.END) {
             DelayedEffects.tick(event.getServer());
             StateScanner.tick(event.getServer());
+            EffectChanges.tick(event.getServer());
         }
     }
 
@@ -225,6 +249,7 @@ public final class EffectControlEvents {
     public static void onServerStopped(ServerStoppedEvent event) {
         DelayedEffects.clear();
         StateScanner.clear();
+        EffectChanges.clear();
     }
 
     private static ResourceLocation dimension(ServerPlayer player) {

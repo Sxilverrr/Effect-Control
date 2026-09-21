@@ -13,6 +13,7 @@ public record RuleFilter(
         List<ResourceLocation> items,
         List<String> sources,
         List<ResourceLocation> advancements,
+        List<ResourceLocation> causes,
         List<String> fluids,
         CompoundTag nbt,
         int radius
@@ -45,18 +46,15 @@ public record RuleFilter(
         if (!matchesNbt(context.stack())) {
             return false;
         }
-        if (!blocks.isEmpty() && !blocks.contains(context.block())) {
-            return false;
-        }
-        if (!entities.isEmpty() && !entities.contains(context.entity())) {
-            return false;
-        }
-        if (!items.isEmpty() && !items.contains(context.item())) {
-            return false;
-        }
-        if (!advancements.isEmpty() && !advancements.contains(context.advancement())) {
-            return false;
-        }
-        return sources.isEmpty() || sources.contains(context.source());
+        return accepts(blocks, context.block())
+                && accepts(entities, context.entity())
+                && accepts(items, context.item())
+                && accepts(advancements, context.advancement())
+                && accepts(causes, context.cause())
+                && accepts(sources, context.source());
+    }
+
+    private static <T> boolean accepts(List<T> wanted, T actual) {
+        return wanted.isEmpty() || (actual != null && wanted.contains(actual));
     }
 }

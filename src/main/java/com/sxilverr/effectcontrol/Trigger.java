@@ -28,6 +28,8 @@ public enum Trigger {
     TRADE(EventKind.TRADE),
     LEVEL_UP(EventKind.LEVEL_UP),
     TOOL_BROKEN(EventKind.TOOL_BROKEN),
+    GAIN_EFFECT(EventKind.EFFECT_GAINED),
+    LOSE_EFFECT(EventKind.EFFECT_LOST),
     NEAR(StateKind.PROXIMITY, true),
     AWAY(StateKind.PROXIMITY, false),
     LOOKING(StateKind.LOOKING, true),
@@ -87,6 +89,10 @@ public enum Trigger {
         return this == ENTER || this == LEAVE;
     }
 
+    public boolean isEffectTrigger() {
+        return this == GAIN_EFFECT || this == LOSE_EFFECT;
+    }
+
     public boolean matches(EventKind other) {
         if (this == ANY) {
             return other == EventKind.JOIN || other == EventKind.RESPAWN || other == EventKind.END_RETURN;
@@ -121,6 +127,8 @@ public enum Trigger {
             case "trade" -> TRADE;
             case "level_up", "levelup" -> LEVEL_UP;
             case "tool_broken", "item_broken" -> TOOL_BROKEN;
+            case "gain_effect", "effect_gained", "effect_added" -> GAIN_EFFECT;
+            case "lose_effect", "effect_lost", "effect_removed", "effect_expired" -> LOSE_EFFECT;
             case "near", "when_near" -> NEAR;
             case "away", "not_near", "leave_near" -> AWAY;
             case "looking", "look", "looking_at" -> LOOKING;

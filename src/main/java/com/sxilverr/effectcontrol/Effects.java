@@ -29,6 +29,10 @@ public final class Effects {
                         spec.ambient(), spec.particles(), spec.icon()))
                 .orElse(null);
     }
+
+    public static ResourceLocation id(MobEffectInstance instance) {
+        return BuiltInRegistries.MOB_EFFECT.getKey(instance.getEffect().value());
+    }
     *///?} else {
     public static boolean exists(ResourceLocation id) {
         return BuiltInRegistries.MOB_EFFECT.get(id) != null;
@@ -53,6 +57,10 @@ public final class Effects {
         }
         return new MobEffectInstance(effect, spec.durationTicks(), spec.amplifier(),
                 spec.ambient(), spec.particles(), spec.icon());
+    }
+
+    public static ResourceLocation id(MobEffectInstance instance) {
+        return BuiltInRegistries.MOB_EFFECT.getKey(instance.getEffect());
     }
     //?}
 }

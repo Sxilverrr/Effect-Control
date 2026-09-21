@@ -6,6 +6,7 @@ import java.util.List;
 public final class Settings {
     private static List<EffectRule> rules = List.of();
     private static List<EffectRule> stateRules = List.of();
+    private static boolean effectRules = false;
     private static int applyDelayTicks = 0;
     private static int scanIntervalTicks = 20;
 
@@ -15,6 +16,7 @@ public final class Settings {
     public static void setRules(List<? extends String> raw) {
         List<EffectRule> parsed = new ArrayList<>();
         List<EffectRule> proximity = new ArrayList<>();
+        boolean effects = false;
         for (String entry : raw) {
             String text = entry == null ? "" : entry.trim();
             if (text.isEmpty() || text.startsWith("#")) {
@@ -29,9 +31,13 @@ public final class Settings {
             if (rule.trigger().isStateTrigger()) {
                 proximity.add(rule);
             }
+            if (rule.trigger().isEffectTrigger()) {
+                effects = true;
+            }
         }
         rules = List.copyOf(parsed);
         stateRules = List.copyOf(proximity);
+        effectRules = effects;
         EffectApplier.forgetMissingEffects();
         EffectApplier.clearCooldowns();
         StateScanner.clear();
@@ -55,6 +61,10 @@ public final class Settings {
 
     public static boolean hasStateRules() {
         return !stateRules.isEmpty();
+    }
+
+    public static boolean hasEffectRules() {
+        return effectRules;
     }
 
     public static int applyDelayTicks() {

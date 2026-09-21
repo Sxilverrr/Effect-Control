@@ -23,6 +23,8 @@ public enum EventKind {
     TRADE,
     LEVEL_UP,
     TOOL_BROKEN,
+    EFFECT_GAINED,
+    EFFECT_LOST,
     STATE_ON,
     STATE_OFF
 }

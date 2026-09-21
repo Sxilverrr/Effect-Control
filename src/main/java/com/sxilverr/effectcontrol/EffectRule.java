@@ -64,6 +64,7 @@ public record EffectRule(
         List<ResourceLocation> items = new ArrayList<>();
         List<String> sources = new ArrayList<>();
         List<ResourceLocation> advancements = new ArrayList<>();
+        List<ResourceLocation> causes = new ArrayList<>();
         List<String> fluids = new ArrayList<>();
         List<ResourceLocation> requires = new ArrayList<>();
         List<ResourceLocation> missing = new ArrayList<>();
@@ -166,6 +167,11 @@ public record EffectRule(
                 }
                 case "advancement" -> {
                     if (!addId(advancements, value)) {
+                        return null;
+                    }
+                }
+                case "cause", "trigger_effect" -> {
+                    if (!addId(causes, value)) {
                         return null;
                     }
                 }
@@ -367,7 +373,7 @@ public record EffectRule(
 
         RuleFilter filter = new RuleFilter(dimension, List.copyOf(blocks), List.copyOf(entities),
                 List.copyOf(items), List.copyOf(sources), List.copyOf(advancements),
-                List.copyOf(fluids), nbt, radius);
+                List.copyOf(causes), List.copyOf(fluids), nbt, radius);
         WorldFilter world = new WorldFilter(x, y, z, time, days, health, xpLevel, light,
                 List.copyOf(weather), List.copyOf(biomes), List.copyOf(tags), List.copyOf(gamemodes),
                 List.copyOf(difficulties), List.copyOf(wearing), statType, statId, statCount, chance, cooldown);
@@ -398,6 +404,7 @@ public record EffectRule(
         appendAll(builder, filter.entities());
         appendAll(builder, filter.items());
         appendAll(builder, filter.advancements());
+        appendAll(builder, filter.causes());
         for (String source : filter.sources()) {
             builder.append('/').append(source);
         }

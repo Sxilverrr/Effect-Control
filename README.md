@@ -62,6 +62,7 @@ Activated by something the player does:
 | `trade` | Villager trade completed | `item` |
 | `level_up` | Player gains XP levels | |
 | `tool_broken` | Held item breaks | `item` |
+| `gain_effect` / `lose_effect` | Player gains / loses a potion effect | `cause` |
 
 Continuous player state, activated when entering or leaving it. They come in pairs, so you pair the
 `give` with the matching `remove`:
@@ -88,12 +89,13 @@ for `hurt`; `takedamagefrom` or `damaged_by` for `hurt_by`; `eat` or `drink` for
 `sprint` for `sprinting`; `burning` for `on_fire`; `mounted` for `riding`; `dismounted` for
 `not_riding`; `asleep` for `sleeping`; `awake` for `not_sleeping`; `submerged` for `underwater`;
 `in_liquid` / `not_in_liquid` for `in_fluid` / `not_in_fluid`; `levelup` for `level_up`;
-`item_broken` for `tool_broken`.
+`item_broken` for `tool_broken`; `effect_gained` or `effect_added` for `gain_effect`;
+`effect_lost`, `effect_removed` or `effect_expired` for `lose_effect`.
 
 Filter keys have aliases too: `mob` for `entity`, `armor` for `wearing`, `damage_type` for
 `source`, `liquid` for `fluid`, `xp` for `xp_level`, `tag` for `nbt`, `has`/`without` for
-`requires`/`missing`, and `set_flag`/`clear_flag`/`flagged`/`unflagged` for
-`set`/`unset`/`if_set`/`if_unset`.
+`requires`/`missing`, `trigger_effect` for `cause`, and
+`set_flag`/`clear_flag`/`flagged`/`unflagged` for `set`/`unset`/`if_set`/`if_unset`.
 
 ## Filters
 
@@ -108,6 +110,7 @@ from each key you used.
 | `item` | Item id | `item=minecraft:golden_apple` |
 | `source` | Damage type, as vanilla names it | `source=lava` |
 | `advancement` | Advancement id | `advancement=minecraft:story/mine_diamond` |
+| `cause` | Effect id that was gained or lost | `cause=minecraft:hunger` |
 | `radius` | Blocks, `1` to `64` | `radius=8` |
 | `x` `y` `z` | Coordinate, exact or a range | `y=50..100`, `y=..0`, `x=64..` |
 | `time` | Day tick `0..24000`, or a name | `time=night`, `time=0..6000` |
@@ -155,6 +158,24 @@ effects = [
 
 Conditions read the player's state from **before** the rule set runs, so rules in one event cannot
 see each other's work. A rule blocked by a condition does not count against its `limit`.
+
+## Effect Chains
+
+`gain_effect` and `lose_effect` let one effect set off another. `cause` is the effect that triggers it, 
+and `chance` turns it into a roll:
+
+```toml
+effects = [
+    "effect=minecraft:poison, duration=10, trigger=gain_effect, cause=toughasnails:thirst, chance=25",
+    "effect=minecraft:slowness, duration=infinite, trigger=gain_effect, cause=minecraft:hunger",
+    "effect=minecraft:slowness, trigger=lose_effect, cause=minecraft:hunger, action=remove"
+]
+```
+
+Thirst has a 25% chance to poison. Hunger will give Slowness to the player for as long as it lasts.
+
+Refreshing an effect the player already has does not count as gaining it. `lose_effect` activates
+when the effect ran out or was removed. Rules run at the end of the tick.
 
 ## Flags
 
