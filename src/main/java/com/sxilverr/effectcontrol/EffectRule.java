@@ -1,8 +1,6 @@
 package com.sxilverr.effectcontrol;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 
@@ -218,7 +216,7 @@ public record EffectRule(
                     }
                 }
                 case "nbt" -> {
-                    nbt = parseNbt(value);
+                    nbt = ItemNbt.parse(value);
                     if (nbt == null) {
                         return null;
                     }
@@ -493,14 +491,6 @@ public record EffectRule(
         }
         parts.add(current.toString());
         return parts;
-    }
-
-    private static CompoundTag parseNbt(String value) {
-        try {
-            return TagParser.parseTag(value);
-        } catch (CommandSyntaxException e) {
-            return null;
-        }
     }
 
     private static Range parseTime(String value) {

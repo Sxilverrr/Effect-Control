@@ -3,7 +3,7 @@
 plugins {
     id("dev.architectury.loom")
     id("architectury-plugin")
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
 }
 
 val loader = prop("loom.platform")!!
@@ -47,7 +47,7 @@ dependencies {
     mappings(loom.officialMojangMappings())
     "neoForge"("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
 
-    modCompileOnly("top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1")
+    modCompileOnly("top.theillusivec4.curios:curios-neoforge:${common.mod.dep("curios")}")
 
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionNeoForge")) { isTransitive = false }
@@ -85,15 +85,13 @@ tasks.shadowJar {
 }
 
 tasks.processResources {
-    properties(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta"),
+    properties(listOf("META-INF/neoforge.mods.toml"),
         "id" to mod.id,
         "name" to mod.name,
         "version" to mod.version,
         "minecraft" to common.mod.prop("mc_dep_forgelike"),
         "loader_range" to common.mod.prop("loader_range"),
-        "lang_range" to common.mod.prop("lang_range"),
-        "pack_format" to common.mod.prop("pack_format"),
-        "data_pack_format" to common.mod.prop("data_pack_format")
+        "lang_range" to common.mod.prop("lang_range")
     )
 }
 

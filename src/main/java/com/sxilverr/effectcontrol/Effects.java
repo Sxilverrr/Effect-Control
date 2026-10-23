@@ -10,21 +10,31 @@ public final class Effects {
     private Effects() {
     }
 
+    //? if >=1.21.2 {
+    /*private static java.util.Optional<net.minecraft.core.Holder.Reference<MobEffect>> holder(ResourceLocation id) {
+        return BuiltInRegistries.MOB_EFFECT.get(id);
+    }
+    *///?} else if >=1.20.5 {
+    /*private static java.util.Optional<net.minecraft.core.Holder.Reference<MobEffect>> holder(ResourceLocation id) {
+        return BuiltInRegistries.MOB_EFFECT.getHolder(id);
+    }
+    *///?}
+
     //? if >=1.20.5 {
     /*public static boolean exists(ResourceLocation id) {
-        return BuiltInRegistries.MOB_EFFECT.getHolder(id).isPresent();
+        return holder(id).isPresent();
     }
 
     public static boolean has(ServerPlayer player, ResourceLocation id) {
-        return BuiltInRegistries.MOB_EFFECT.getHolder(id).filter(player::hasEffect).isPresent();
+        return holder(id).filter(player::hasEffect).isPresent();
     }
 
     public static void remove(ServerPlayer player, ResourceLocation id) {
-        BuiltInRegistries.MOB_EFFECT.getHolder(id).ifPresent(player::removeEffect);
+        holder(id).ifPresent(player::removeEffect);
     }
 
     public static MobEffectInstance instance(EffectSpec spec) {
-        return BuiltInRegistries.MOB_EFFECT.getHolder(spec.effect())
+        return holder(spec.effect())
                 .map(holder -> new MobEffectInstance(holder, spec.durationTicks(), spec.amplifier(),
                         spec.ambient(), spec.particles(), spec.icon()))
                 .orElse(null);

@@ -9,6 +9,12 @@ import net.minecraft.world.level.saveddata.SavedData;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+//? if >=1.21.5 {
+/*import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.world.level.saveddata.SavedDataType;
+*///?}
 
 public class EffectControlData extends SavedData {
     private static final String FILE_ID = EffectControl.MOD_ID;
@@ -16,7 +22,31 @@ public class EffectControlData extends SavedData {
 
     private final Map<UUID, Map<String, Integer>> counts = new HashMap<>();
 
-    //? if >=1.20.5 {
+    //? if >=1.21.5 {
+    /*private record Entry(UUID player, Map<String, Integer> rules) {
+    }
+
+    private static final Codec<Entry> ENTRY_CODEC = RecordCodecBuilder.create(i -> i.group(
+            UUIDUtil.CODEC.fieldOf("player").forGetter(Entry::player),
+            Codec.unboundedMap(Codec.STRING, Codec.INT).fieldOf("rules").forGetter(Entry::rules)
+    ).apply(i, Entry::new));
+
+    private static final Codec<EffectControlData> CODEC = ENTRY_CODEC.listOf().fieldOf("players").codec().xmap(entries -> {
+        EffectControlData data = new EffectControlData();
+        entries.forEach(entry -> data.counts.put(entry.player(), new HashMap<>(entry.rules())));
+        return data;
+    }, data -> data.counts.entrySet().stream()
+            .filter(entry -> !entry.getValue().isEmpty())
+            .map(entry -> new Entry(entry.getKey(), entry.getValue()))
+            .toList());
+
+    private static final SavedDataType<EffectControlData> TYPE =
+            new SavedDataType<>(FILE_ID, EffectControlData::new, CODEC, null);
+
+    public static EffectControlData get(MinecraftServer server) {
+        return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+    }
+    *///?} else if >=1.20.5 {
     /*public static EffectControlData get(MinecraftServer server) {
         return server.overworld().getDataStorage().computeIfAbsent(
                 new SavedData.Factory<EffectControlData>(
@@ -71,18 +101,19 @@ public class EffectControlData extends SavedData {
         }
     }
 
-    //? if >=1.20.5 {
-    /*@Override
-    public CompoundTag save(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
-        return write(tag);
-    }
-    *///?} else {
+    //? if <1.20.5 {
     @Override
     public CompoundTag save(CompoundTag tag) {
         return write(tag);
     }
-    //?}
+    //?} else if <1.21.5 {
+    /*@Override
+    public CompoundTag save(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        return write(tag);
+    }
+    *///?}
 
+    //? if <1.21.5 {
     private CompoundTag write(CompoundTag tag) {
         ListTag players = new ListTag();
         for (Map.Entry<UUID, Map<String, Integer>> entry : counts.entrySet()) {
@@ -119,4 +150,5 @@ public class EffectControlData extends SavedData {
         }
         return data;
     }
+    //?}
 }

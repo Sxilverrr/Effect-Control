@@ -3,10 +3,10 @@ package com.sxilverr.effectcontrol;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -53,7 +53,7 @@ public final class StateScanner {
     private static void scan(ServerPlayer player) {
         Set<String> previous = ACTIVE.computeIfAbsent(player.getUUID(), id -> new HashSet<>());
         Set<String> current = new HashSet<>();
-        ServerLevel level = player.serverLevel();
+        Level level = player.level();
 
         for (EffectRule rule : Settings.stateRules()) {
             boolean active = isActive(player, level, rule);
@@ -71,7 +71,7 @@ public final class StateScanner {
         previous.addAll(current);
     }
 
-    private static boolean isActive(ServerPlayer player, ServerLevel level, EffectRule rule) {
+    private static boolean isActive(ServerPlayer player, Level level, EffectRule rule) {
         RuleFilter filter = rule.filter();
         if (filter.dimension() != null && !filter.dimension().equals(level.dimension().location())) {
             return false;
@@ -112,7 +112,7 @@ public final class StateScanner {
                 || filter.entities().contains(BuiltInRegistries.ENTITY_TYPE.getKey(vehicle.getType()));
     }
 
-    private static boolean isLookingAt(ServerPlayer player, ServerLevel level, RuleFilter filter) {
+    private static boolean isLookingAt(ServerPlayer player, Level level, RuleFilter filter) {
         double distance = filter.radius() > 0 ? filter.radius() : DEFAULT_LOOK_DISTANCE;
         Vec3 eye = player.getEyePosition();
         Vec3 end = eye.add(player.getViewVector(1.0F).scale(distance));
@@ -141,7 +141,7 @@ public final class StateScanner {
         return false;
     }
 
-    private static boolean isNear(ServerPlayer player, ServerLevel level, RuleFilter filter) {
+    private static boolean isNear(ServerPlayer player, Level level, RuleFilter filter) {
         int radius = filter.radius();
         if (filter.wantsEntities() && hasEntityNearby(player, level, filter, radius)) {
             return true;
@@ -149,7 +149,7 @@ public final class StateScanner {
         return filter.wantsBlocks() && hasBlockNearby(player, level, filter, radius);
     }
 
-    private static boolean hasEntityNearby(ServerPlayer player, ServerLevel level, RuleFilter filter, int radius) {
+    private static boolean hasEntityNearby(ServerPlayer player, Level level, RuleFilter filter, int radius) {
         AABB box = player.getBoundingBox().inflate(radius);
         for (Entity entity : level.getEntities(player, box)) {
             if (entity.distanceTo(player) > radius) {
@@ -162,7 +162,7 @@ public final class StateScanner {
         return false;
     }
 
-    private static boolean hasBlockNearby(ServerPlayer player, ServerLevel level, RuleFilter filter, int radius) {
+    private static boolean hasBlockNearby(ServerPlayer player, Level level, RuleFilter filter, int radius) {
         BlockPos origin = player.blockPosition();
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         int squared = radius * radius;

@@ -3,10 +3,10 @@ package com.sxilverr.effectcontrol;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Locale;
@@ -18,7 +18,7 @@ public final class Environment {
     }
 
     public static boolean matches(ServerPlayer player, WorldFilter filter) {
-        ServerLevel level = player.serverLevel();
+        Level level = player.level();
         BlockPos pos = player.blockPosition();
         long dayTime = level.getDayTime();
 
@@ -69,14 +69,14 @@ public final class Environment {
         return filter.chance() >= 100 || player.getRandom().nextInt(100) < filter.chance();
     }
 
-    public static String weather(ServerLevel level) {
+    public static String weather(Level level) {
         if (level.isThundering()) {
             return "thunder";
         }
         return level.isRaining() ? "rain" : "clear";
     }
 
-    public static boolean inBiome(ServerLevel level, BlockPos pos, List<ResourceLocation> biomes) {
+    public static boolean inBiome(Level level, BlockPos pos, List<ResourceLocation> biomes) {
         return level.getBiome(pos).unwrapKey()
                 .map(key -> biomes.contains(key.location()))
                 .orElse(false);

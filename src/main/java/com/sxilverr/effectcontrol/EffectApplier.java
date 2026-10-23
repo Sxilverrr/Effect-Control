@@ -28,7 +28,7 @@ public final class EffectApplier {
             return;
         }
 
-        EffectControlData data = EffectControlData.get(player.server);
+        EffectControlData data = EffectControlData.get(player.level().getServer());
         UUID id = player.getUUID();
         List<ResourceLocation> removals = new ArrayList<>();
         List<MobEffectInstance> grants = new ArrayList<>();
@@ -94,7 +94,7 @@ public final class EffectApplier {
             return true;
         }
         String key = id + "|" + rule.key();
-        long now = player.serverLevel().getGameTime();
+        long now = player.level().getGameTime();
         Long last = COOLDOWNS.get(key);
         if (last != null && now - last < cooldown) {
             return false;

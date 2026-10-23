@@ -17,7 +17,11 @@ public final class EffectControlCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(EffectControl.MOD_ID)
+                //? if >=1.21.11 {
+                /*.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                *///?} else {
                 .requires(source -> source.hasPermission(2))
+                //?}
                 .then(Commands.literal("reset")
                         .executes(context -> reset(
                                 context.getSource(),
@@ -42,7 +46,7 @@ public final class EffectControlCommand {
             data.reset(player.getUUID());
         }
         String names = targets.stream()
-                .map(player -> player.getGameProfile().getName())
+                .map(player -> player.getName().getString())
                 .collect(Collectors.joining(", "));
         source.sendSuccess(() -> Component.literal("Reset Effect Control counters for " + names), true);
         return targets.size();

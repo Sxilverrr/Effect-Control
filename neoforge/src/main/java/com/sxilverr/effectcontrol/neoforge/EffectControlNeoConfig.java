@@ -1,15 +1,11 @@
 package com.sxilverr.effectcontrol.neoforge;
 
 import com.sxilverr.effectcontrol.Settings;
-import com.sxilverr.effectcontrol.EffectControl;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = EffectControl.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class EffectControlNeoConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
@@ -35,14 +31,12 @@ public final class EffectControlNeoConfig {
     private EffectControlNeoConfig() {
     }
 
-    @SubscribeEvent
     public static void onLoad(ModConfigEvent.Loading event) {
         if (event.getConfig().getSpec() == SPEC) {
             sync();
         }
     }
 
-    @SubscribeEvent
     public static void onReload(ModConfigEvent.Reloading event) {
         if (event.getConfig().getSpec() == SPEC) {
             sync();
