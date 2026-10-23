@@ -78,6 +78,14 @@ Continuous player state, activated when entering or leaving it. They come in pai
 | `riding` / `not_riding` | Player is on a mount | `entity` optional |
 | `sleeping` / `not_sleeping` | Player is in a bed | |
 | `underwater` / `not_underwater` | Player's head is submerged | |
+| `enter_biome` / `leave_biome` | Player is in the biome | `biome` |
+
+```toml
+effects = [
+    "effect=minecraft:fire_resistance, duration=infinite, trigger=enter_biome, biome=minecraft:desert",
+    "effect=minecraft:fire_resistance, trigger=leave_biome, biome=minecraft:desert, action=remove"
+]
+```
 
 Most triggers accept alternative spellings, so write whichever you prefer. `damage` or `attack`
 for `hurt`; `takedamagefrom` or `damaged_by` for `hurt_by`; `eat` or `drink` for `consume`;
@@ -88,7 +96,8 @@ for `hurt`; `takedamagefrom` or `damaged_by` for `hurt_by`; `eat` or `drink` for
 `look` or `looking_at` for `looking`; `look_away` for `not_looking`; `sneak` or `crouching` for `sneaking`;
 `sprint` for `sprinting`; `burning` for `on_fire`; `mounted` for `riding`; `dismounted` for
 `not_riding`; `asleep` for `sleeping`; `awake` for `not_sleeping`; `submerged` for `underwater`;
-`in_liquid` / `not_in_liquid` for `in_fluid` / `not_in_fluid`; `levelup` for `level_up`;
+`in_liquid` / `not_in_liquid` for `in_fluid` / `not_in_fluid`; `in_biome` for `enter_biome`;
+`exit_biome` or `not_in_biome` for `leave_biome`; `levelup` for `level_up`;
 `item_broken` for `tool_broken`; `effect_gained` or `effect_added` for `gain_effect`;
 `effect_lost`, `effect_removed` or `effect_expired` for `lose_effect`.
 

@@ -360,7 +360,7 @@ public record EffectRule(
         if (trigger.needsDimension() && dimension == null) {
             return null;
         }
-        if (!validState(trigger, radius, blocks, entities, fluids)) {
+        if (!validState(trigger, radius, blocks, entities, fluids, biomes)) {
             return null;
         }
         if (trigger == Trigger.FIRST_JOIN) {
@@ -371,11 +371,12 @@ public record EffectRule(
             icon = false;
         }
 
+        boolean biomeState = trigger.state() == StateKind.BIOME;
         RuleFilter filter = new RuleFilter(dimension, List.copyOf(blocks), List.copyOf(entities),
                 List.copyOf(items), List.copyOf(sources), List.copyOf(advancements),
-                List.copyOf(causes), List.copyOf(fluids), nbt, radius);
+                List.copyOf(causes), List.copyOf(fluids), biomeState ? List.copyOf(biomes) : List.of(), nbt, radius);
         WorldFilter world = new WorldFilter(x, y, z, time, days, health, xpLevel, light,
-                List.copyOf(weather), List.copyOf(biomes), List.copyOf(tags), List.copyOf(gamemodes),
+                List.copyOf(weather), biomeState ? List.of() : List.copyOf(biomes), List.copyOf(tags), List.copyOf(gamemodes),
                 List.copyOf(difficulties), List.copyOf(wearing), statType, statId, statCount, chance, cooldown);
         EffectSpec spec = effect == null ? null
                 : new EffectSpec(effect, durationTicks, level - 1, ambient, particles, icon);
@@ -385,11 +386,13 @@ public record EffectRule(
     }
 
     private static boolean validState(Trigger trigger, int radius, List<ResourceLocation> blocks,
-                                      List<ResourceLocation> entities, List<String> fluids) {
+                                      List<ResourceLocation> entities, List<String> fluids,
+                                      List<ResourceLocation> biomes) {
         return switch (trigger.state()) {
             case PROXIMITY -> radius >= 1 && !(blocks.isEmpty() && entities.isEmpty());
             case LOOKING -> !(blocks.isEmpty() && entities.isEmpty());
             case IN_FLUID -> !fluids.isEmpty();
+            case BIOME -> !biomes.isEmpty();
             default -> true;
         };
     }
@@ -405,6 +408,7 @@ public record EffectRule(
         appendAll(builder, filter.items());
         appendAll(builder, filter.advancements());
         appendAll(builder, filter.causes());
+        appendAll(builder, filter.biomes());
         for (String source : filter.sources()) {
             builder.append('/').append(source);
         }

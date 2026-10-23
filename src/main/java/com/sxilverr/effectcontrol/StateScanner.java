@@ -86,6 +86,7 @@ public final class StateScanner {
             case RIDING -> isRiding(player, filter);
             case SLEEPING -> player.isSleeping();
             case UNDERWATER -> player.isUnderWater();
+            case BIOME -> Environment.inBiome(level, player.blockPosition(), filter.biomes());
             default -> false;
         };
     }

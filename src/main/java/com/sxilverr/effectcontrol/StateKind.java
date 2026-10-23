@@ -10,5 +10,6 @@ public enum StateKind {
     IN_FLUID,
     RIDING,
     SLEEPING,
-    UNDERWATER
+    UNDERWATER,
+    BIOME
 }

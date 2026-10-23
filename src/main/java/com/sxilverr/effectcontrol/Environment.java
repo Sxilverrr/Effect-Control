@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 
+import java.util.List;
 import java.util.Locale;
 
 public final class Environment {
@@ -53,7 +54,7 @@ public final class Environment {
                 && !filter.gamemodes().contains(player.gameMode.getGameModeForPlayer().getName())) {
             return false;
         }
-        if (!filter.biomes().isEmpty() && !matchesBiome(level, pos, filter)) {
+        if (!filter.biomes().isEmpty() && !inBiome(level, pos, filter.biomes())) {
             return false;
         }
         if (!filter.tags().isEmpty() && filter.tags().stream().noneMatch(player.getTags()::contains)) {
@@ -75,9 +76,9 @@ public final class Environment {
         return level.isRaining() ? "rain" : "clear";
     }
 
-    private static boolean matchesBiome(ServerLevel level, BlockPos pos, WorldFilter filter) {
+    public static boolean inBiome(ServerLevel level, BlockPos pos, List<ResourceLocation> biomes) {
         return level.getBiome(pos).unwrapKey()
-                .map(key -> filter.biomes().contains(key.location()))
+                .map(key -> biomes.contains(key.location()))
                 .orElse(false);
     }
 

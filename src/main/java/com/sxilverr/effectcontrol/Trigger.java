@@ -47,7 +47,9 @@ public enum Trigger {
     SLEEPING(StateKind.SLEEPING, true),
     NOT_SLEEPING(StateKind.SLEEPING, false),
     UNDERWATER(StateKind.UNDERWATER, true),
-    NOT_UNDERWATER(StateKind.UNDERWATER, false);
+    NOT_UNDERWATER(StateKind.UNDERWATER, false),
+    ENTER_BIOME(StateKind.BIOME, true),
+    LEAVE_BIOME(StateKind.BIOME, false);
 
     private final EventKind kind;
     private final StateKind state;
@@ -147,6 +149,8 @@ public enum Trigger {
             case "not_sleeping", "awake" -> NOT_SLEEPING;
             case "underwater", "submerged" -> UNDERWATER;
             case "not_underwater" -> NOT_UNDERWATER;
+            case "enter_biome", "in_biome" -> ENTER_BIOME;
+            case "leave_biome", "exit_biome", "not_in_biome" -> LEAVE_BIOME;
             default -> null;
         };
     }

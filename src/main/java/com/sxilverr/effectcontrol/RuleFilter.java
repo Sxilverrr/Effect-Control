@@ -15,6 +15,7 @@ public record RuleFilter(
         List<ResourceLocation> advancements,
         List<ResourceLocation> causes,
         List<String> fluids,
+        List<ResourceLocation> biomes,
         CompoundTag nbt,
         int radius
 ) {
