@@ -30,6 +30,7 @@ public enum Trigger {
     TOOL_BROKEN(EventKind.TOOL_BROKEN),
     GAIN_EFFECT(EventKind.EFFECT_GAINED),
     LOSE_EFFECT(EventKind.EFFECT_LOST),
+    APPLY_EFFECT(EventKind.EFFECT_APPLIED),
     NEAR(StateKind.PROXIMITY, true),
     AWAY(StateKind.PROXIMITY, false),
     LOOKING(StateKind.LOOKING, true),
@@ -92,7 +93,7 @@ public enum Trigger {
     }
 
     public boolean isEffectTrigger() {
-        return this == GAIN_EFFECT || this == LOSE_EFFECT;
+        return this == GAIN_EFFECT || this == LOSE_EFFECT || this == APPLY_EFFECT;
     }
 
     public boolean matches(EventKind other) {
@@ -131,6 +132,7 @@ public enum Trigger {
             case "tool_broken", "item_broken" -> TOOL_BROKEN;
             case "gain_effect", "effect_gained", "effect_added" -> GAIN_EFFECT;
             case "lose_effect", "effect_lost", "effect_removed", "effect_expired" -> LOSE_EFFECT;
+            case "apply_effect", "effect_applied", "reapply_effect", "refresh_effect" -> APPLY_EFFECT;
             case "near", "when_near" -> NEAR;
             case "away", "not_near", "leave_near" -> AWAY;
             case "looking", "look", "looking_at" -> LOOKING;

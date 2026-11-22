@@ -63,6 +63,7 @@ Activated by something the player does:
 | `level_up` | Player gains XP levels | |
 | `tool_broken` | Held item breaks | `item` |
 | `gain_effect` / `lose_effect` | Player gains / loses a potion effect | `cause` |
+| `apply_effect` | A potion effect is put on the player, even one they already have | `cause` |
 
 Continuous player state, activated when entering or leaving it. They come in pairs, so you pair the
 `give` with the matching `remove`:
@@ -99,7 +100,8 @@ for `hurt`; `takedamagefrom` or `damaged_by` for `hurt_by`; `eat` or `drink` for
 `in_liquid` / `not_in_liquid` for `in_fluid` / `not_in_fluid`; `in_biome` for `enter_biome`;
 `exit_biome` or `not_in_biome` for `leave_biome`; `levelup` for `level_up`;
 `item_broken` for `tool_broken`; `effect_gained` or `effect_added` for `gain_effect`;
-`effect_lost`, `effect_removed` or `effect_expired` for `lose_effect`.
+`effect_lost`, `effect_removed` or `effect_expired` for `lose_effect`; `effect_applied`,
+`reapply_effect` or `refresh_effect` for `apply_effect`.
 
 Filter keys have aliases too: `mob` for `entity`, `armor` for `wearing`, `damage_type` for
 `source`, `liquid` for `fluid`, `xp` for `xp_level`, `tag` for `nbt`, `has`/`without` for
@@ -185,6 +187,15 @@ Thirst has a 25% chance to poison. Hunger will give Slowness to the player for a
 
 Refreshing an effect the player already has does not count as gaining it. `lose_effect` activates
 when the effect ran out or was removed. Rules run at the end of the tick.
+
+`apply_effect` rolls every time the effect is applied, including refreshes of one the player
+still has. Some mods reapply their effects every tick, so you would have to add a `cooldown`:
+
+```toml
+effects = [
+    "effect=minecraft:poison, duration=10, trigger=apply_effect, cause=toughasnails:thirst, chance=25, cooldown=5"
+]
+```
 
 ## Flags
 

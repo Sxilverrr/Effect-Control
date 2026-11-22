@@ -25,6 +25,7 @@ public enum EventKind {
     TOOL_BROKEN,
     EFFECT_GAINED,
     EFFECT_LOST,
+    EFFECT_APPLIED,
     STATE_ON,
     STATE_OFF
 }

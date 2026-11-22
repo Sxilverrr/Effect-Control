@@ -213,7 +213,7 @@ public final class EffectControlEvents {
     @SubscribeEvent
     public static void onEffectAdded(MobEffectEvent.Added event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            EffectChanges.note(player, event.getEffectInstance(), event.getOldEffectInstance() != null);
+            EffectChanges.added(player, event.getEffectInstance(), event.getOldEffectInstance() != null);
         }
     }
 
